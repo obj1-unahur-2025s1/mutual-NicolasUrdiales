@@ -1,9 +1,87 @@
-import example.pepita
+import viajes.*
+import socios.*
+import clases.*
 
-describe "group of tests for pepita" {
+describe "Ejemplos excursiones" {
+  const excursionNormal = new ExcursionACiudad(cantidadDeAtracciones=4)
+  const excursionNormal2 = new ExcursionACiudad(cantidadDeAtracciones=8)
+  const excursionTropical = new ExcursionACiudadTropical(cantidadDeAtracciones=4)
+  const excursionTropical2 = new ExcursionACiudadTropical(cantidadDeAtracciones=8)
+  const excursionTropical3 = new ExcursionACiudadTropical(cantidadDeAtracciones=10)
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+  test "una excursion normal en la que se visita 4 atracciones, lleva 2 dias, no implica esfuerzo y no sirve para broncearse" {
+    assert.notThat(excursionNormal.implicaEsfuerzo())
+    assert.equals(2, excursionNormal.diasQueLleva())
+    assert.notThat(excursionNormal.sirveParaBroncearse())
   }
 
+  test "excursion a ciudad tropical en la que se visitan 4 atracciones, lleva 3 dias, no implica esfuerzo y si sirve para broncearse"{
+    assert.equals(3, excursionTropical.diasQueLleva())
+    assert.notThat(excursionTropical.implicaEsfuerzo())
+    assert.that(excursionTropical.sirveParaBroncearse())
+  }
+  test "una excursion normal en la que se visitan 8 atracciones, lleva 4 dias, implica esfuerzo, y no sirve para broncearse"{
+    assert.equals(4, excursionNormal2.diasQueLleva())
+    assert.that(excursionNormal2.implicaEsfuerzo())
+    assert.notThat(excursionNormal2.sirveParaBroncearse())
+  }
+
+  test "excursion tropical en la que se visitan 8 atracciones, lleva 5 dias, implica esfuerzo, y sirve para broncearse"{
+    assert.equals(5, excursionTropical2.diasQueLleva())
+    assert.that(excursionTropical2.implicaEsfuerzo())
+    assert.that(excursionTropical2.sirveParaBroncearse())
+  }
+
+  test "excursion tropical en la que se visitan 10 atracciones, lleva 6 dias, no implica esfuerzo, y siver para broncearse"{
+    assert.equals(6, excursionTropical3.diasQueLleva())
+    assert.notThat(excursionTropical3.implicaEsfuerzo())
+    assert.that(excursionTropical3.sirveParaBroncearse())
+  }
+
+}
+describe "Test Salida de Trekking" {
+  const salida1 = new SalidaDeTrekking(kilometrosDeSenderos=100, diasDeSol=130)
+  const salida2 = new SalidaDeTrekking(kilometrosDeSenderos=50, diasDeSol=240)
+  const salida3 = new SalidaDeTrekking(kilometrosDeSenderos=250, diasDeSol=130)
+  test "una salida de 100km a un lugar de 130 dias de sol por año, lleva 2 dias, implica esfuerzo y no sirve para broncearse" {
+    assert.equals(2, salida1.diasQueLleva())
+    assert.that(salida1.implicaEsfuerzo())
+    assert.notThat(salida1.sirveParaBroncearse())
+  }
+  test "una salida de 50km a un lugar con 240 dias de sol por año, lleva 1 dia, no implica esfuerzoy si sirve para broncearse"{
+    assert.equals(1, salida2.diasQueLleva())
+    assert.notThat(salida2.implicaEsfuerzo())
+    assert.that(salida2.sirveParaBroncearse())
+  }
+  test "Una salida de 250km a un lugar con 130 dias de sol por año, lleva 5 dias, implica esfuerzo, y sirve para broncearse"{
+    assert.equals(5, salida3.diasQueLleva())
+    assert.that(salida3.implicaEsfuerzo())
+    assert.that(salida3.sirveParaBroncearse())
+  }
+}
+
+
+describe "Test socios" {
+  const playa1 = new ViajeDePlaya(largoPlaya=1000)
+  const playa2 = new ViajeDePlaya(largoPlaya=2000)
+  const claseGim = new ClaseGimnasia()
+  const roque = new Socio(cantidadMaxActividades=2, edad=30)
+  const ana = new Socio(cantidadMaxActividades=3, edad=20)
+  method initialize(){
+    roque.realizarActividad(playa1)
+    roque.realizarActividad(playa2)
+    ana.realizarActividad(playa1)
+    ana.realizarActividad(playa2)
+    ana.realizarActividad(claseGim)
+  }
+  test "roque un socio que hizo 2 viajes a la playa. con logitudes de 1000 y 2000 metros, y que tiene un maximo de 2 actividades, es adorador del sol y su actividad esforzada es el viaje con playa de 2000 metros" {
+    assert.that(roque.esAdoradorDelSol())
+    assert.equals([playa2], roque.actividadesEsforzadas())
+  }
+
+  test "ana una socia que hizo dos viajes iguales a roque, pero como tiene maximo 3 actividades, entonces si le podemos registar una clase de gimnasia. 
+  Despues de registrarla, obtenemos que ana ya no es adoradora del sol, y su coleccion de actividades esforzadas incluye el viaje de 2000 metros de playa y la clase"{
+    assert.notThat(ana.esAdoradorDelSol())
+    assert.equals([playa2, claseGim], ana.actividadesEsforzadas())
+  }
 }
